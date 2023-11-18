@@ -24,6 +24,17 @@
         // -------------------------------------------------------------------------------
 
         // const embed = ....
+        const embed = new SearchEmbed("#chart-embed", {
+                collapseDataSources: true,
+                dataSources: [worksheetID],
+                searchOptions: {
+                    searchTokenString: '[sales] [product type] top 30 [sales date].monthly',
+                    executeSearch: true,
+                    },
+                });
+            embed
+            .on(EmbedEvent.Data, payload =>
+                showTable(embed, payload)).render();
     }
 
     const showTable = (embed) => {
@@ -36,6 +47,22 @@
         // -------------------------------------------------------------------------------
 
         // embed.trigger(HostEvent.GetTML).then(response => { ....
+        embed.trigger(HostEvent.GetTML).then(response => {
+        let search = response.answer.search_query;
+        console.log("TML string: " + search);
+        const embedTable = new SearchEmbed("#table-embed", {
+            hideDataSources: true,
+            forceTable: true,
+            dataSources: ["4d98d3f5-5c6a-44eb-82fb-d529ca20e31f"],
+            searchOptions: {
+                searchTokenString: search,
+                executeSearch: true,
+            },
+            visibleActions: [],
+        });
+        embedTable.render();
+
+    })
     }
 
     onMount(() => {
