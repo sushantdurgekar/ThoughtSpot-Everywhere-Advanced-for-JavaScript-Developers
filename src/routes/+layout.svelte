@@ -67,8 +67,12 @@
             // 5. Uncomment the line to set up the API.
             // -------------------------------------------------------------------------------
 
-            const ee = init({}
-            );
+            const ee = init({
+                thoughtSpotHost:constants.tsURL,
+                authType: AuthType.TrustedAuthToken,
+                username: $store.tsUser,
+                getAuthToken: getAuthToken,
+            });
 
             if (ee) {
                 ee
@@ -84,7 +88,7 @@
             }
 
             // Exercise 2: Uncomment the following line to set up the API.
-            // await setupAPI();  // make sure the API is set up.
+            await setupAPI();  // make sure the API is set up.
         }
     ;
 
@@ -113,6 +117,7 @@
 
         console.log('should have a token by now: ' + token);
         $store.tsAPI = new TSAPIv2(constants.tsURL, token);
+        
         setVersion();
     }
 
@@ -137,6 +142,14 @@
 
         // $store.tsAPI ...
         // $store.tsAPI.system().then((response) => {
+            $store.tsAPI.system().then((response) => {
+                console.log(response);
+                try {
+                $store.version = response.release_version;
+                } catch (e) {
+                console.log('error getting version: ' + e);
+                }
+            });
     }
 
     onMount(() => {
